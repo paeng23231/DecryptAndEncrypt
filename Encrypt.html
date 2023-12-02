@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Encryption and Decryption Tool</title>
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+    <link rel="stylesheet" href="style.css">
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            text-align: center;
+            margin: 20px;
+            background: linear-gradient(45deg, #3498db, #2c3e50);
+            color: #fff;
+        }
+
+        h1 {
+            color: #ecf0f1;
+            margin-bottom: 30px;
+        }
+
+        .card {
+            border: none;
+            border-radius: 10px;
+            overflow: hidden;
+            background: #2c3e50;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+            transition: box-shadow 0.3s ease;
+            margin: 20px;
+        }
+
+        .card-header {
+            background-color: #3498db;
+            color: white;
+            padding: 20px;
+            border-bottom: 2px solid #2980b9;
+        }
+
+        .card-content {
+            padding: 20px;
+            text-align: left;
+        }
+
+        label {
+            display: block;
+            margin: 10px 0 5px;
+            color: #ecf0f1;
+            font-weight: bold;
+            text-align: left;
+        }
+
+        input {
+            width: 100%;
+            padding: 10px;
+            margin: 5px 0 15px;
+            box-sizing: border-box;
+            border: 1px solid #2980b9;
+            border-radius: 5px;
+            font-size: 1em;
+            background-color: #2c3e50;
+            color: #ecf0f1;
+            transition: border-color 0.3s ease, color 0.3s ease;
+        }
+
+        input:focus {
+            border-color: #3498db;
+            color: #3498db;
+        }
+
+        button {
+            background-color: #3498db;
+            color: white;
+            padding: 10px 20px;
+            margin: 10px 0;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1em;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+        }
+
+        button:hover {
+            background-color: #2980b9;
+            transform: scale(1.05);
+        }
+
+        .result {
+            margin-top: 20px;
+            padding: 20px;
+            border-radius: 10px;
+            background-color: #2c3e50;
+            display: none;
+            transition: box-shadow 0.3s ease, opacity 0.5s ease;
+        }
+
+        .result.fade-in {
+            opacity: 1;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+
+            to {
+                opacity: 1;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1>Encryption and Decryption Tool</h1>
+
+        <div class="row">
+            <div class="col-md-6">
+                <div class="card" id="decryptionCard">
+                    <div class="card-header">
+                        <h2>Decryption</h2>
+                    </div>
+                    <div class="card-content">
+                        <label for="ciphertext">Enter an encrypted text:</label>
+                        <input type="text" id="ciphertext" placeholder="Encrypted text">
+
+                        <label for="decryptKey">Enter key:</label>
+                        <input type="number" id="decryptKey" placeholder="Key">
+
+                        <button type="button" onclick="decrypt()">Decrypt</button>
+
+                        <div class="result" id="decryptResult"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-6">
+                <div class="card" id="encryptionCard">
+                    <div class="card-header">
+                        <h2>Encryption</h2>
+                    </div>
+                    <div class="card-content">
+                        <label for="plaintext">Enter a plaintext:</label>
+                        <input type="text" id="plaintext" placeholder="Plaintext">
+
+                        <label for="encryptKey">Enter key:</label>
+                        <input type="number" id="encryptKey" placeholder="Key">
+
+                        <button type="button" onclick="encrypt()">Encrypt</button>
+
+                        <div class="result" id="encryptResult"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/jquery.js"></script>
+    <script src="js/popper.js"></script>
+    <script src="js/bootstrap.min.js"></script>
+    <script>
+        function decrypt() {
+            var ciphertext = document.getElementById("ciphertext").value;
+            var decryptKey = parseInt(document.getElementById("decryptKey").value);
+
+            var decrypted_message = "";
+            for (var i = 0; i < ciphertext.length; i++) {
+                var char = ciphertext[i];
+                if (char.match(/[a-zA-Z]/)) {
+                    if (char.match(/[a-z]/)) {
+                        decrypted_char = String.fromCharCode((char.charCodeAt(0) - 'a'.charCodeAt(0) - decryptKey + 26) % 26 + 'a'.charCodeAt(0));
+                    } else {
+                        decrypted_char = String.fromCharCode((char.charCodeAt(0) - 'A'.charCodeAt(0) - decryptKey + 26) % 26 + 'A'.charCodeAt(0));
+                    }
+                    decrypted_message += decrypted_char;
+                } else {
+                    decrypted_message += char;
+                }
+            }
+
+            var decryptResultElement = document.getElementById("decryptResult");
+            decryptResultElement.textContent = "Decrypted message: " + decrypted_message;
+            decryptResultElement.classList.add("fade-in");
+            decryptResultElement.style.display = "block";
+
+            var encryptResultElement = document.getElementById("encryptResult");
+            encryptResultElement.style.display = "none"; // Hide the other result
+        }
+
+        function encrypt() {
+            var plaintext = document.getElementById("plaintext").value;
+            var encryptKey = parseInt(document.getElementById("encryptKey").value);
+
+            var encrypted_message = "";
+            for (var i = 0; i < plaintext.length; i++) {
+                var char = plaintext[i];
+                if (char.match(/[a-zA-Z]/)) {
+                    if (char.match(/[a-z]/)) {
+                        encrypted_char = String.fromCharCode((char.charCodeAt(0) - 'a'.charCodeAt(0) + encryptKey) % 26 + 'a'.charCodeAt(0));
+                    } else {
+                        encrypted_char = String.fromCharCode((char.charCodeAt(0) - 'A'.charCodeAt(0) + encryptKey) % 26 + 'A'.charCodeAt(0));
+                    }
+                    encrypted_message += encrypted_char;
+                } else {
+                    encrypted_message += char;
+                }
+            }
+
+            var encryptResultElement = document.getElementById("encryptResult");
+            encryptResultElement.textContent = "Encrypted message: " + encrypted_message;
+            encryptResultElement.classList.add("fade-in");
+            encryptResultElement.style.display = "block";
+
+            var decryptResultElement = document.getElementById("decryptResult");
+            decryptResultElement.style.display = "none"; // Hide the other result
+        }
+    </script>
+</body>
+
+</html>
